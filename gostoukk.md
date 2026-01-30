@@ -205,7 +205,8 @@ local function CreateUI()
     CloseCorner.Parent = CloseBtn
     
     CloseBtn.MouseButton1Click:Connect(function()
-        ScreenGui:Destroy()
+        MainContainer.Visible = false
+        Settings.UI.MenuOpen = false
     end)
     
     -- Navbar lateral
@@ -690,7 +691,7 @@ local function CreateUI()
     WelcomeText.Position = UDim2.new(0, 15, 0, 45)
     WelcomeText.Size = UDim2.new(1, -30, 1, -60)
     WelcomeText.Font = Enum.Font.Gotham
-    WelcomeText.Text = "Sistema tático para Exército Brasileiro\n\nPressione 'K' para abrir/fechar"
+    WelcomeText.Text = "Sistema tático para Exército Brasileiro"
     WelcomeText.TextColor3 = Colors.TextDim
     WelcomeText.TextSize = 11
     WelcomeText.TextXAlignment = Enum.TextXAlignment.Left
@@ -889,7 +890,7 @@ local function CreateUI()
     KeyButton.MouseButton1Click:Connect(function()
         if waitingForKey then return end
         waitingForKey = true
-        KeyButton.Text = "Aguardando..."
+        KeyButton.Text = "..."
         
         local connection
         connection = UserInputService.InputBegan:Connect(function(input)
