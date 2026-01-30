@@ -4,7 +4,6 @@ local UserInputService = game:GetService("UserInputService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
--- Configurações
 local Settings = {
     Aimbot = {
         Enabled = false,
@@ -47,7 +46,6 @@ local DisableESP
 local ToggleAimbot
 local ToggleHitbox
 
--- Cores do tema militar/tático
 local Colors = {
     Background = Color3.fromRGB(20, 25, 30),
     Secondary = Color3.fromRGB(30, 35, 40),
@@ -61,14 +59,12 @@ local Colors = {
     Danger = Color3.fromRGB(244, 67, 54)
 }
 
--- Função para criar a interface
 local function CreateUI()
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Name = "NatalHubV2"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    -- Container Principal
     local MainContainer = Instance.new("Frame")
     MainContainer.Name = "MainContainer"
     MainContainer.Parent = ScreenGui
@@ -87,7 +83,6 @@ local function CreateUI()
     MainStroke.Thickness = 1
     MainStroke.Parent = MainContainer
     
-    -- Barra superior (Header)
     local Header = Instance.new("Frame")
     Header.Name = "Header"
     Header.Parent = MainContainer
@@ -99,7 +94,6 @@ local function CreateUI()
     HeaderCorner.CornerRadius = UDim.new(0, 4)
     HeaderCorner.Parent = Header
     
-    -- Fix para arredondar apenas o topo
     local HeaderFix = Instance.new("Frame")
     HeaderFix.Parent = Header
     HeaderFix.BackgroundColor3 = Colors.Secondary
@@ -107,7 +101,6 @@ local function CreateUI()
     HeaderFix.Position = UDim2.new(0, 0, 1, -4)
     HeaderFix.Size = UDim2.new(1, 0, 0, 4)
     
-    -- Sistema de Drag
     local dragging, dragInput, dragStart, startPos
     
     local function update(input)
@@ -141,7 +134,6 @@ local function CreateUI()
         end
     end)
     
-    -- Título
     local Title = Instance.new("TextLabel")
     Title.Parent = Header
     Title.BackgroundTransparency = 1
@@ -153,7 +145,6 @@ local function CreateUI()
     Title.TextSize = 16
     Title.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Subtítulo
     local Subtitle = Instance.new("TextLabel")
     Subtitle.Parent = Header
     Subtitle.BackgroundTransparency = 1
@@ -165,7 +156,6 @@ local function CreateUI()
     Subtitle.TextSize = 11
     Subtitle.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Status indicator
     local StatusDot = Instance.new("Frame")
     StatusDot.Parent = Header
     StatusDot.BackgroundColor3 = Colors.Success
@@ -188,7 +178,6 @@ local function CreateUI()
     StatusLabel.TextSize = 11
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Botão fechar
     local CloseBtn = Instance.new("TextButton")
     CloseBtn.Parent = Header
     CloseBtn.BackgroundColor3 = Colors.Danger
@@ -209,7 +198,6 @@ local function CreateUI()
         Settings.UI.MenuOpen = false
     end)
     
-    -- Navbar lateral
     local Navbar = Instance.new("Frame")
     Navbar.Parent = MainContainer
     Navbar.BackgroundColor3 = Colors.Secondary
@@ -223,7 +211,6 @@ local function CreateUI()
     NavStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     NavStroke.Parent = Navbar
     
-    -- Container de conteúdo
     local ContentFrame = Instance.new("Frame")
     ContentFrame.Parent = MainContainer
     ContentFrame.BackgroundTransparency = 1
@@ -233,7 +220,6 @@ local function CreateUI()
     local currentPage = nil
     local pages = {}
     
-    -- Função para criar botão de navegação
     local function CreateNavButton(name, icon, order)
         local NavBtn = Instance.new("TextButton")
         NavBtn.Parent = Navbar
@@ -276,7 +262,6 @@ local function CreateUI()
         TextLabel.TextSize = 12
         TextLabel.TextXAlignment = Enum.TextXAlignment.Left
         
-        -- Criar página
         local Page = Instance.new("ScrollingFrame")
         Page.Parent = ContentFrame
         Page.BackgroundTransparency = 1
@@ -320,7 +305,6 @@ local function CreateUI()
         return Page, ActivatePage
     end
     
-    -- Criar páginas
     local HomePage, ActivateHome = CreateNavButton("HOME", "■", 0)
     local AimbotPage = CreateNavButton("AIMBOT", "◆", 1)
     local HitboxPage = CreateNavButton("HITBOX", "▲", 2)
@@ -329,7 +313,6 @@ local function CreateUI()
     
     ActivateHome()
     
-    -- Funções auxiliares para criar elementos
     local function CreateCard(parent, yPos, height)
         local Card = Instance.new("Frame")
         Card.Parent = parent
@@ -671,7 +654,6 @@ local function CreateUI()
         return Dropdown
     end
     
-    -- ========== HOME PAGE ==========
     local WelcomeCard = CreateCard(HomePage, 15, 120)
     
     local WelcomeTitle = Instance.new("TextLabel")
@@ -716,7 +698,6 @@ local function CreateUI()
     
     HomePage.CanvasSize = UDim2.new(0, 0, 0, 260)
     
-    -- ========== AIMBOT PAGE ==========
     local AimbotCard1 = CreateCard(AimbotPage, 15, 280)
     
     CreateSectionHeader(AimbotCard1, "SILENT AIM", 0)
@@ -762,7 +743,6 @@ local function CreateUI()
     
     AimbotPage.CanvasSize = UDim2.new(0, 0, 0, 570)
     
-    -- ========== HITBOX PAGE ==========
     local HitboxCard1 = CreateCard(HitboxPage, 15, 220)
     
     CreateSectionHeader(HitboxCard1, "EXPANSOR DE HITBOX", 0)
@@ -774,9 +754,7 @@ local function CreateUI()
     
     CreateToggle(HitboxCard1, "Ignorar Time", "Não expande hitbox de aliados", Settings.Hitbox.IgnoreTeam, 90, function(value)
         Settings.Hitbox.IgnoreTeam = value
-        -- Atualizar hitboxes se estiver ativado
         if Settings.Hitbox.Enabled then
-            -- Restaurar todos e re-expandir com nova configuração
             for _, player in ipairs(Players:GetPlayers()) do
                 if player ~= LocalPlayer then
                     pcall(function()
@@ -799,7 +777,6 @@ local function CreateUI()
     
     CreateDropdown(HitboxCard2, "Parte Alvo", {"Head", "HumanoidRootPart"}, Settings.Hitbox.TargetPart, 35, function(value)
         Settings.Hitbox.TargetPart = value
-        -- Se hitbox estiver ativo, restaurar tudo e re-expandir com nova parte
         if Settings.Hitbox.Enabled then
             RestoreAllHitboxes()
             wait(0.1)
@@ -823,7 +800,6 @@ local function CreateUI()
     
     HitboxPage.CanvasSize = UDim2.new(0, 0, 0, 470)
     
-    -- ========== ESP PAGE ==========
     local ESPCard = CreateCard(ESPPage, 15, 160)
     
     CreateSectionHeader(ESPCard, "SISTEMA VISUAL", 0)
@@ -835,7 +811,6 @@ local function CreateUI()
     
     CreateToggle(ESPCard, "Check de Time", "Não exibe ESP em aliados", Settings.ESP.TeamCheck, 90, function(value)
         Settings.ESP.TeamCheck = value
-        -- Recriar ESP para aplicar mudanças
         if Settings.ESP.Enabled then
             DisableESP()
             wait(0.1)
@@ -845,7 +820,6 @@ local function CreateUI()
     
     ESPPage.CanvasSize = UDim2.new(0, 0, 0, 190)
     
-    -- ========== CONFIG PAGE ==========
     local ConfigCard = CreateCard(ConfigPage, 15, 100)
     
     CreateSectionHeader(ConfigCard, "MENU", 0)
@@ -922,14 +896,11 @@ local function CreateUI()
         Settings.UI.Font = value
         local newFont = Enum.Font[value]
         
-        -- Atualizar todas as fontes no ScreenGui
         for _, obj in pairs(ScreenGui:GetDescendants()) do
             if obj:IsA("TextLabel") or obj:IsA("TextButton") then
                 pcall(function()
-                    -- Manter negrito onde era negrito
                     local wasBold = string.find(tostring(obj.Font), "Bold")
                     if wasBold and not string.find(value, "Bold") then
-                        -- Se era bold e nova fonte não é bold, tentar versão bold
                         local boldVersion = value .. "Bold"
                         if pcall(function() return Enum.Font[boldVersion] end) then
                             obj.Font = Enum.Font[boldVersion]
@@ -948,7 +919,6 @@ local function CreateUI()
     
     ScreenGui.Parent = game:GetService("CoreGui")
     
-    -- Keybind toggle
     UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if gameProcessed then return end
         if input.KeyCode == Settings.UI.Keybind then
@@ -960,7 +930,6 @@ local function CreateUI()
     return ScreenGui
 end
 
--- ESP Functions
 local function CreateESP(player)
     if player == LocalPlayer then return end
     
@@ -973,7 +942,6 @@ local function CreateESP(player)
         local head = player.Character:FindFirstChild("Head")
         if not head then return end
         
-        -- Verificar se deve mostrar ESP baseado no time
         local shouldShow = true
         if Settings.ESP.TeamCheck and player.Team and LocalPlayer.Team then
             if player.Team == LocalPlayer.Team then
@@ -982,7 +950,6 @@ local function CreateESP(player)
         end
         
         if not shouldShow then
-            -- Esconder ESP se não deve mostrar
             if espObjects.Highlight then espObjects.Highlight.Enabled = false end
             if espObjects.BillboardGui then espObjects.BillboardGui.Enabled = false end
             return
@@ -1060,7 +1027,6 @@ function DisableESP()
     ESPObjects = {}
 end
 
--- FOV Circle
 local function CreateFOVCircle()
     if not Drawing then return nil end
     
@@ -1088,7 +1054,6 @@ local function UpdateFOVCircle()
     end
 end
 
--- Aimbot Functions
 local function IsVisible(targetPart)
     if not Settings.Aimbot.VisibilityCheck then return true end
     
@@ -1187,7 +1152,6 @@ function ToggleAimbot(enabled)
     end
 end
 
--- Hitbox Expander Functions
 local function ExpandHitbox(player)
     if player == LocalPlayer then return end
     if not player.Character then return end
@@ -1197,10 +1161,8 @@ local function ExpandHitbox(player)
     
     if not targetPart then return end
     
-    -- Verificar se deve expandir baseado no time
     if Settings.Hitbox.IgnoreTeam and player.Team and LocalPlayer.Team then
         if player.Team == LocalPlayer.Team then
-            -- Restaurar se for do mesmo time
             if OriginalSizes[targetPart] then
                 local original = OriginalSizes[targetPart]
                 targetPart.Size = original.Size
@@ -1212,12 +1174,10 @@ local function ExpandHitbox(player)
         end
     end
     
-    -- Verificar visibilidade se necessário
     if Settings.Hitbox.VisibilityCheck and not IsVisible(targetPart) then
         return
     end
     
-    -- Salvar propriedades originais se ainda não foi salvo
     if not OriginalSizes[targetPart] then
         OriginalSizes[targetPart] = {
             Size = targetPart.Size,
@@ -1227,7 +1187,6 @@ local function ExpandHitbox(player)
         }
     end
     
-    -- Expandir hitbox sem afetar física
     targetPart.Size = Vector3.new(Settings.Hitbox.Size, Settings.Hitbox.Size, Settings.Hitbox.Size)
     targetPart.Transparency = Settings.Hitbox.Transparency
     targetPart.Massless = true
@@ -1239,7 +1198,6 @@ local function RestoreHitbox(player)
     
     local character = player.Character
     
-    -- Tentar restaurar tanto Head quanto HumanoidRootPart
     for _, partName in ipairs({"Head", "HumanoidRootPart"}) do
         local targetPart = character:FindFirstChild(partName)
         
@@ -1276,12 +1234,10 @@ end
 
 function ToggleHitbox(enabled)
     if enabled then
-        -- Criar conexão para loop de hitbox
         if not HitboxConnections.Loop then
             HitboxConnections.Loop = RunService.Heartbeat:Connect(HitboxLoop)
         end
         
-        -- Expandir hitboxes imediatamente
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= LocalPlayer then
                 pcall(function()
@@ -1290,18 +1246,15 @@ function ToggleHitbox(enabled)
             end
         end
     else
-        -- Desconectar loop
         if HitboxConnections.Loop then
             HitboxConnections.Loop:Disconnect()
             HitboxConnections.Loop = nil
         end
         
-        -- Restaurar todos os hitboxes
         RestoreAllHitboxes()
     end
 end
 
--- Initialize
 local function Initialize()
     local oldGui = game:GetService("CoreGui"):FindFirstChild("NatalHubV2")
     if oldGui then
