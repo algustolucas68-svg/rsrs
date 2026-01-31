@@ -1191,6 +1191,12 @@ local function ExpandHitbox(player)
     targetPart.Transparency = Settings.Hitbox.Transparency
     targetPart.Massless = true
     targetPart.CanCollide = false
+    
+    if not targetPart:FindFirstChild("OriginalSize") then
+        local value = Instance.new("BoolValue")
+        value.Name = "OriginalSize"
+        value.Parent = targetPart
+    end
 end
 
 local function RestoreHitbox(player)
@@ -1208,6 +1214,9 @@ local function RestoreHitbox(player)
             targetPart.Massless = original.Massless
             targetPart.CanCollide = original.CanCollide
             OriginalSizes[targetPart] = nil
+            
+            local marker = targetPart:FindFirstChild("OriginalSize")
+            if marker then marker:Destroy() end
         end
     end
 end
@@ -1220,14 +1229,24 @@ local function RestoreAllHitboxes()
     end
 end
 
+local lastHitboxUpdate = 0
 local function HitboxLoop()
     if not Settings.Hitbox.Enabled then return end
     
+    local currentTime = tick()
+    if currentTime - lastHitboxUpdate < 0.5 then return end
+    lastHitboxUpdate = currentTime
+    
     for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            pcall(function()
-                ExpandHitbox(player)
-            end)
+        if player ~= LocalPlayer and player.Character then
+            local character = player.Character
+            local targetPart = character:FindFirstChild(Settings.Hitbox.TargetPart)
+            
+            if targetPart and not targetPart:FindFirstChild("OriginalSize") then
+                pcall(function()
+                    ExpandHitbox(player)
+                end)
+            end
         end
     end
 end
